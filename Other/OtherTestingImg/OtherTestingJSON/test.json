@@ -1,0 +1,75 @@
+{
+	'Location_33.775215_-84.396067': {
+		'LocationInformation': {
+			'PanoID': '33.775215',
+			'Latitude': '33.775215',
+			'Longitude': '33.775215',
+			'Address': '33.775215'
+		},
+		'Img1_0': {
+			'Direction_Degrees': '33.775215',
+			'PicturePath': '33.775215',
+			'Pitch': '33.775215',
+			'ZoomAndFov': '33.775215',
+			'CalculatedOutputAzure': {
+				'ContainsSideWalk': '33.775215',
+				'ImageTagging': {
+					'Tags': {
+						'33.775215': {
+							'Confidence': '33.775215',
+							'Hint': '33.775215'
+						},
+						'33.775215': {
+							'Confidence': '33.775215',
+							'Hint': '33.775215'
+						}
+					},
+					'RequestID': '33.775215'
+				},
+				'DescribeImg': {
+					'Description': {
+						'Text': '33.775215',
+						'Confidence': '33.775215'
+					},
+					'Tags': {
+						'33.775215': '33.775215'
+					},
+					'RequestID': '33.775215'
+				},
+				'AnalysisImg': {
+					'Analysis': {
+						'33.775215': {
+							'Score': '33.775215'
+						}
+					},
+					'RequestID': '33.775215'
+				},
+				'ObjectsImg': {
+					'Objects': {
+						'33.775215': {
+							'X': '33.775215',
+							'Y': '33.775215',
+							'W': '33.775215',
+							'H': '33.775215'
+						}
+					},
+					'RequestID': '33.775215'
+				},
+				'AreaIntreast': {
+					'IntreastLocation': {
+						'X': '33.775215',
+						'Y': '33.775215',
+						'W': '33.775215',
+						'H': '33.775215'
+					},
+					'RequestID': '33.775215'
+				},
+				'MetaData': {
+					'Width': '33.775215',
+					'Height': '33.775215',
+					'Format': '33.775215'
+				}
+			}
+		}
+	}
+}

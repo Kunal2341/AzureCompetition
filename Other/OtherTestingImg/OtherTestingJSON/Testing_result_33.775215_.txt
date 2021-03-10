@@ -1,0 +1,135 @@
+{
+   "geocoded_waypoints" : [
+      {
+         "geocoder_status" : "OK",
+         "place_id" : "ChIJlYGjAGIE9YgRpGSn-NVBM2Y",
+         "types" : [ "street_address" ]
+      },
+      {
+         "geocoder_status" : "OK",
+         "place_id" : "ChIJpyMGKWIE9YgRg4kow6lYE38",
+         "types" : [ "street_address" ]
+      }
+   ],
+   "routes" : [
+      {
+         "bounds" : {
+            "northeast" : {
+               "lat" : 33.7756868,
+               "lng" : -84.39412519999999
+            },
+            "southwest" : {
+               "lat" : 33.77521110000001,
+               "lng" : -84.39606689999999
+            }
+         },
+         "copyrights" : "Map data ©2021 Google",
+         "legs" : [
+            {
+               "distance" : {
+                  "text" : "0.1 mi",
+                  "value" : 228
+               },
+               "duration" : {
+                  "text" : "3 mins",
+                  "value" : 158
+               },
+               "end_address" : "741 Fowler St, Atlanta, GA 30313, USA",
+               "end_location" : {
+                  "lat" : 33.7753955,
+                  "lng" : -84.39412519999999
+               },
+               "start_address" : "261 4th St NW, Atlanta, GA 30318, USA",
+               "start_location" : {
+                  "lat" : 33.77521110000001,
+                  "lng" : -84.39606689999999
+               },
+               "steps" : [
+                  {
+                     "distance" : {
+                        "text" : "420 ft",
+                        "value" : 128
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 89
+                     },
+                     "end_location" : {
+                        "lat" : 33.7756868,
+                        "lng" : -84.39482799999999
+                     },
+                     "html_instructions" : "Head \u003cb\u003eeast\u003c/b\u003e on \u003cb\u003e4th St NW\u003c/b\u003e",
+                     "polyline" : {
+                        "points" : "avcmElrbbO?A?A?GCQAQCKG[EKKg@Sg@Q_@CGQ["
+                     },
+                     "start_location" : {
+                        "lat" : 33.77521110000001,
+                        "lng" : -84.39606689999999
+                     },
+                     "travel_mode" : "WALKING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "194 ft",
+                        "value" : 59
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 44
+                     },
+                     "end_location" : {
+                        "lat" : 33.7752425,
+                        "lng" : -84.39452639999999
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eright\u003c/b\u003e",
+                     "maneuver" : "turn-right",
+                     "polyline" : {
+                        "points" : "aycmEtjbbOFGHMBG@ABEBADCFCF?H?DAJCFE"
+                     },
+                     "start_location" : {
+                        "lat" : 33.7756868,
+                        "lng" : -84.39482799999999
+                     },
+                     "travel_mode" : "WALKING"
+                  },
+                  {
+                     "distance" : {
+                        "text" : "135 ft",
+                        "value" : 41
+                     },
+                     "duration" : {
+                        "text" : "1 min",
+                        "value" : 25
+                     },
+                     "end_location" : {
+                        "lat" : 33.7753955,
+                        "lng" : -84.39412519999999
+                     },
+                     "html_instructions" : "Turn \u003cb\u003eleft\u003c/b\u003e",
+                     "maneuver" : "turn-left",
+                     "polyline" : {
+                        "points" : "gvcmExhbbOCE[iA"
+                     },
+                     "start_location" : {
+                        "lat" : 33.7752425,
+                        "lng" : -84.39452639999999
+                     },
+                     "travel_mode" : "WALKING"
+                  }
+               ],
+               "traffic_speed_entry" : [],
+               "via_waypoint" : []
+            }
+         ],
+         "overview_polyline" : {
+            "points" : "avcmElrbbOC]SeA_@oAUg@Q[FGLUNM^ERI_@oA"
+         },
+         "summary" : "4th St NW",
+         "warnings" : [
+            "Walking directions are in beta. Use caution – This route may be missing sidewalks or pedestrian paths."
+         ],
+         "waypoint_order" : []
+      }
+   ],
+   "status" : "OK"
+}
