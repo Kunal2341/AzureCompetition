@@ -1,155 +1,77 @@
-# AzureCompetition
+# Accessible Directions
+The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
 
-# About the street view API and the maps API 
+# Steps
+1. Locate the center of a specific college and get its lat long coordinates. (*selenium*)
+2. Generate 4 corners around the point to generate a square/rectangle of different dimensions (*for Georgia Tech it is a width of ~1 mile but Pace University is ~0.75 mile*). In order to calculate the corners I added the lat longs by a specific number, here I estimated that earth is flat so the area will not be a perfect square but its okay to estimate that. 
+3. Generate a list of lat long points in a 100 by 100 feet matix. (*estimated by just addition of lat longs by specific number*)
+4. For each of the points check whether there is an road/walkway in a 25 meter radius. (*~80 feet*) by checking if a panorma is present 
+5. If there is a panorma save 4 images (North, East, South, West) and label and desceach of the images. (*Using the Azure Vision API* **tagging** *and* **describe** )
+6. Combine all the data in JSON file and upload to MongoDB (*check below for format*)
+7. Collect start address and end address from user. 
+8. Call directions API 
+9. For each step in directions, calculate all the lat long coordinates in a 75 feet interal in between each point (*Since each step is broken down by the direction needed to move, between each step the lat long is a straight line so I calculated it using a specific trig formula.*)
+10. For each point created in all steps find the closest lat long which is saved in database. (*the average difference will be around 30 feet*) 
+11. Using the pre-run azure API calls determine if the path is accesible and in which direction (NESW) *check calculations for how we determined if the route is accessible or not
+12. If the determined route is not accesible generate a detour route which is accesible
+13. Generate list of directions including images describition of the enviorment and which side of road to walk on
+14. Return JSON to front end with all info about directions
 
-There are 2 types of images we can recieve from the API
+# Calculation of is road is accessible - the brains of the program
+In many college campuses most of the area, there is panormas avaliable in the google maps database. We access this through their web streets api and save the images locally. Using Azure describe and tagging computer vision AI models we get a list of tags and a desciptions of the image with their confidences. We use a tested threshold and specific tag names to determine if that lat long location is accessible. Some of the tags we use are `sidewalk` and `way`. 
+## Finding closest lat long in Data
+Since processing to the mongodb database is very time consuming, I save the excel file with all the lat longs from github. This is hosted on a seperate public repository which is --> *https://github.com/Kunal2341/filesAzureComp*
+## Process of determining
+When we are calculating one leg of the directions we get every 75 foot interval in a straight line. As we don't have data for every single location, we calculate the closest possible lat long to each point in the line. We then calculate the direction our saved point is from the interval point is and detect whether in that direction that path is accessible. We average an distance of **30-50** feet for each lat long and the images can easily see that far into the distance. 
 
-|Street View|Maps View|
-|-|-|
-|![image.png](attachment:image.png)|![image-2.png](attachment:image-2.png)|
+For some locations there could be different reasons why the saved location is giving a false value when there is actually an side walk at that location. Examples:
 
-We are focusing on the first one becuase that is where we can get the data about the conditions of the road
+ - Car covering the sidewalk
+ - Damaged Image
+ - Dense roads resulting inaccurate distance predicted 
 
-
-# Street API
-This is my personal API key which is linked to my second email of kunalnewemail2@gmail.com (We need to create a new email just for this project) --> AIzaSyA1-f3qFfdhLmfvu6TwD8oJA5BQUO8cp2E
-
-
-
-
-
-
-## How to limit the Number of images for each location 
-
-Go with parameters
-
-
-# Parameters
-### Required parameters
-
-Either:
-
--   `location`  can be either a text string (such as  `Chagrin Falls, OH`) or a lat/lng value (`40.457375,-80.009353`). The Street View Static API will snap to the panorama photographed closest to this location. When an address text string is provided, the API may use a different camera location to better display the specified location. When a lat/lng is provided, the API searches a 50 meter radius for a photograph closest to this location. Because Street View imagery is periodically refreshed, and photographs may be taken from slightly different positions each time, it's possible that your  `location`  may snap to a different panorama when imagery is updated.
-
-Or:
-
--   `pano`  is a specific panorama ID. These are generally stable.
-
-As well as:
-
--   `size`  specifies the output size of the image in pixels. Size is specified as  `_{width}_x_{height}_`  - for example,  `size=600x400`  returns an image 600 pixels wide, and 400 high.
--   `key`  allows you to monitor your application's API usage in the  [Google Cloud Console](https://console.cloud.google.com/), and ensures that Google can contact you about your application if necessary. For more information, see  [Get a Key and Signature](https://developers.google.com/maps/documentation/streetview/get-api-key).
-      
-
-### Optional parameters
-
--   `signature`  (_recommended_) is a digital signature used to verify that any site generating requests using your API key is authorized to do so. Requests that do not include a digital signature might fail. For more information, see  [Get a Key and Signature](https://developers.google.com/maps/documentation/streetview/get-api-key).
-    
-    **Note: for Google Maps Platform Premium Plan**  customers, the  **digital signature is required**. Get more information on  [authentication parameters for Premium Plan customers](https://developers.google.com/maps/documentation/streetview/get-api-key#premium-auth).
-    
--   `heading`  indicates the compass heading of the camera. Accepted values are from  `0`  to  `360`  (both values indicating North, with  `90`  indicating East, and  `180`  South). If no heading is specified, a value will be calculated that directs the camera towards the specified  `location`, from the point at which the closest photograph was taken.
--   `fov`  (_default is_  `90`) determines the horizontal field of view of the image. The field of view is expressed in degrees, with a maximum allowed value of  `120`. When dealing with a fixed-size viewport, as with a Street View image of a set size, field of view in essence represents zoom, with smaller numbers indicating a higher level of zoom.
-    
-      
-    ![Aquarium Wide Field of View](https://maps.googleapis.com/maps/api/streetview?size=200x200&location=32.764678,-117.227644&heading=235&fov=120&pitch=-5&key=AIzaSyA3kg7YWugGl1lTXmAmaBGPNhDW9pEh5bo&signature=4YLghIx7q6gZVYQVzT1cetR_hfo=)  ![Aquarium Narrow Field of View](https://maps.googleapis.com/maps/api/streetview?size=200x200&location=32.764678,-117.227644&heading=235&fov=20&pitch=-5&key=AIzaSyA3kg7YWugGl1lTXmAmaBGPNhDW9pEh5bo&signature=RvH6kZQfRlzoB68-ChAdnfnp_Xo=)  
-    _(Left:  `fov=120`; Right:  `fov=20`)_
-    
--   `pitch`  (_default is_  `0`) specifies the up or down angle of the camera relative to the Street View vehicle. This is often, but not always, flat horizontal. Positive values angle the camera up (with  `90`  degrees indicating straight up); negative values angle the camera down (with  `-90`  indicating straight down).
--   `radius`  (_default is_  `50`) sets a radius, specified in meters, in which to search for a panorama, centered on the given latitude and longitude. Valid values are non-negative integers.
--   `source`  (_default is_  `default`) limits Street View searches to selected sources. Valid values are:
-    -   `default`  uses the default sources for Street View; searches are not limited to specific sources.
-    -   `outdoor`  limits searches to outdoor collections. Indoor collections are not included in search results. Note that outdoor panoramas may not exist for the specified location. Also note that the search only returns panoramas where it's possible to determine whether they're indoors or outdoors. For example, PhotoSpheres are not returned because it's unknown whether they are indoors or outdoors.
-
-## Things to do
-
- - [ ] Figure out a way to sort/order all the locations data and save the processed data
- - [ ] Create Notion and order
+This is why for each step in each leg of the directions, if the detected point is false, it avergaes a score given to each True value before it determining if it is just a false value. If there is a trend of multiple False values then the program resorts to detecting an alternate route
+### Score Calculation 
+$\bar{TrueValues} = \sum_ (1-\frac{distance}{maxDistance})*100$
+## Alternate/detour Route
+Since the current path is not possible, for each lat long that is not accessible, the program generates a detour to ~150 feet away resulting in a different path hence a safer route. 
+# Time to Run
+As of right now the program is averaging **2min 45s** for all aspects of the program but it could increase to **3min 20s** for alternate routes. For futher development we can definetly lower the amont of distance processing to speed up time. 
 # Requirments
 ```python
 requests==2.25.0
-geopy==2.1.0
-matplotlib==3.3.3
+pandas==1.2.0
+Shapely==1.7.1
+numpy==1.18.5
+pymongo==3.11.3
 ```
+# Refrences
+The Following are the links I used for different aspects of the code
 
-
-# What does our project do
-
-Process
-
-# Database
-This will be saved via JSON format
-```
-└── Georgia Institute of Technology (College-Name)
-    └── Location Information
-	    └── Street Name (Address) : ""
-	    └── City (Address) : ""
-	    └── Zip Code (Address) : ""
-	    └── State (Address) : ""
-    └── Location_1_33.775250_-84.395889
-	    └── LocationInformation
-		    └── PanoID : "pQbsLy1Tk7CE979P_b93nQ"
-		    └── Latitude : 33.775250, 
-		    └── Longitude : -84.395889
-		    └── Address : "260 4th St NW, Atlanta, GA 30313"
-		└── Img1_0
-			└── Direction_Degrees : 0
-			└── Picture : "./img.jpg"
-		    └── Pitch : 0
-		    └── Zoom/fov :	100
-		    └── CalculatedOutputAzure
-			    └── ContainsSideWalk : True
-			    └── ImageTagging
-				    └── Tags
-					    └── outdoor
-						    └── Confidence : 0.9993
-						    └── Hint: None
-					    └── tree
-						    └── Confidence : 0.9852
-						    └── Hint: None
-					    └── playground
-						    └── Confidence : 0.9246
-						    └── Hint: None
-					└── RequestID : "ccc0d7b7-4d3a-4be5-aa27-eac0b5d460f4"
-				└── DescibeImg
-					└── Description
-						└── Text : "a brick walkway with trees and grass"
-						└── Confidence : 0.2736
-					└── Tags
-						└── TAG1: "outdoor"
-						└── TAG2: "sky"
-						└── TAG3: "ground"
-					└── RequestID : "ccc0d7b7-4d3a-4be5-aa27-eac0b5d460f4"
-			    └── AnalysisImg 
-				    └── Analysis
-						└── outdoor_road
-							└── Score: 0.30078125
-					└── RequestID : "e050510d-aa85-424e-9349-d0c26f58f980"
-				└── ObjectsImg
-					└── Objects
-						└── <objName>
-							└── X : 0
-							└── Y : 0
-							└── W : 640
-							└── H : 640
-					└── RequestID : "f1493cb9-7282-4711-948f-e87c6b869cf3"
-				└── AreaIntreast
-					└── IntreastLocation
-						└── X : 0
-						└── Y : 0
-						└── W : 640
-						└── H : 640
-					└── RequestID : "f1493cb9-7282-4711-948f-e87c6b869cf3"
-			    └── MetaData 
-				    └── Width: 640
-				    └── Height: 640
-				    └── Format: "Jpeg"
-		└── Img2_30
-		└── Img3_60
-		└── Img4_90
-		└── Img5_120
-	└── Location_1_33.775250_-84.395889	
-```
-
+ - Directions API (*GCP*)
+	 - https://developers.google.com/maps/documentation/directions/get-directions
+	 - https://developers.google.com/maps/documentation/directions/start
+ - Calculating Interval Lat Long and Direction
+	 - http://www.movable-type.co.uk/scripts/latlong.html
+	 - https://gis.stackexchange.com/questions/157693/getting-all-vertex-lat-long-coordinates-every-1-meter-between-two-known-points
+ - Distance between 2 lat longs
+	 - https://stackoverflow.com/questions/19412462/getting-distance-between-two-points-based-on-latitude-longitude
+ - Plotting and testing out lat longs
+	 - maps.co
+	 - maps.google.com
+ - Azure Console 
+	 - https://cosmos.azure.com/
+	 - https://portal.azure.com/
+ - Google Cloud Platform Console
+	 - https://console.cloud.google.com/
+ - Azure Functions
+	 - https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/concept-tagging-images
+	 - https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/concept-describing-images
+ - < Insert Other Links>
+# Process of saving data
+For each location we need to save every 100 by 100 feet position to get the general area of the place
+This is shown for Georgia Tech for the first 400 points. 
+![](https://lh3.googleusercontent.com/tXs6EQj8cOmnkN2qKxvD10NY_DP0A1FK6B7pBzqYF7HqoDmBv9-eVksc0w7Uxb3GHcCn1zIBOnidCUhw45p0H10JrGcVUxVEwk2zLzsxFbkle9-ib5FomcqYoM8bMas8Ok2RZ67G)
 
 
 ## Calculation of Number of Pictures
@@ -208,3 +130,326 @@ A high zoom will cause the edges of the image to be stretched which will cause t
 A low zoom will not show enough of the image and missing vital features in the location. 
 
 ![](https://developers.google.com/maps/documentation/javascript/images/panoramaTiles.png =600x400)
+
+
+
+# JSON Output
+The following is the format for the output of the JSON which is then taken in by the front end webpage using Azure function of JS
+```
+{'DIRECTIONS': {'elevationChange_meters': -1.4711399078369194,
+                'endLocation': {'address': '240 Broadway, New York, NY 10007, '
+                                           'USA',
+                                'latitude': 40.7124735,
+                                'longitude': -74.0065084,
+                                'placeID': 'ChIJEVT-pBhawokRR7fLjJ8dWkU'},
+                'movedDirectionsDueToNonAccesibileOrginal': False,
+                'overview_polyline': 'wgnwFzwubMy@pBQ`@UOcBsAcBuA{AmAGK_@UkAaA\\g@VTBDv@n@Zq@PQAQHOa@cAQg@',
+                'process': {'Step 1': {'describeEnviorment': ['n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a'],
+                                       'describeMovement': "b'Head "
+                                                           '<b>northwest</b> '
+                                                           'on <b>Fulton '
+                                                           'St</b> toward '
+                                                           "<b>Broadway</b>'",
+                                       'direction': {'NUMBER': 313.9868319965208,
+                                                     'TEXT': 'West'},
+                                       'distance_meters': 67,
+                                       'duration_seconds': 47,
+                                       'endLat': 40.7110058,
+                                       'endLong': -74.00912199999999,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': True,
+                                                                   'direction': 71.896,
+                                                                   'distance': 39.814,
+                                                                   'lat': 40.7110058,
+                                                                   'latStored': 40.71103969999999,}},
+                                       'manuver': 'UNAVALIABLE',
+                                       'startLat': 40.7105199,
+                                       'startLong': -74.0084579},
+                            'Step 2': {'describeEnviorment': ['n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a'],
+                                       'describeMovement': "b'Turn "
+                                                           '<b>right</b> onto '
+                                                           "<b>Broadway</b>'",
+                                       'direction': {'NUMBER': 36.657830739040094,
+                                                     'TEXT': 'North'},
+                                       'distance_meters': 283,
+                                       'duration_seconds': 241,
+                                       'endLat': 40.71293310000001,
+                                       'endLong': -74.0072297,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': True,
+                                                                   'direction': 236.688,
+                                                                   'distance': 62.065,
+                                                                   'lat': 40.71293310000001,
+                                                                   'latStored': 40.7128397,
+                                                                   'lng': -74.0072297,
+                                                                   'lngStored': -74.00741719999999},
+                                                               2: {'SideWalkAccesible': True,
+                                                                   'direction': 236.688,
+                                                                   'distance': 62.065,
+                                                                   'lat': 40.71293310000001,
+                                                                   'latStored': 40.7128397,
+                                                                   'lng': -74.0072297,
+                                                                   'lngStored': -74.00741719999999},}},
+                                       'manuver': 'turn-right',
+                                       'startLat': 40.7110058,
+                                       'startLong': -74.00912199999999},
+                            'Step 3': {'describeEnviorment': ['n/a', 'n/a'],
+                                       'describeMovement': "b'Turn "
+                                                           '<b>right</b> at '
+                                                           '<b>Murray '
+                                                           "Street</b>'",
+                                       'direction': {'NUMBER': 132.26072088334172,
+                                                     'TEXT': 'East'},
+                                       'distance_meters': 15,
+                                       'duration_seconds': 21,
+                                       'endLat': 40.7128957,
+                                       'endLong': -74.0071754,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': False,
+                                                                   'direction': 115.033,
+                                                                   'distance': 48.299,
+                                                                   'lat': 40.7128957,
+                                                                   'latStored': 40.7128397,
+                                                                   'lng': -74.0071754,
+                                                                   'lngStored': -74.00701719999999},}},
+                                       'manuver': 'turn-right',
+                                       'startLat': 40.71293310000001,
+                                       'startLong': -74.0072297},
+                            'Step 4': {'describeEnviorment': ['n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a'],
+                                       'describeMovement': "b'Turn "
+                                                           "<b>right</b>'",
+                                       'direction': {'NUMBER': 215.08051514233736,
+                                                     'TEXT': 'South'},
+                                       'distance_meters': 64,
+                                       'duration_seconds': 45,
+                                       'endLat': 40.7124819,
+                                       'endLong': -74.0075588,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': True,
+                                                                   'direction': 10.112,
+                                                                   'distance': 21.427,
+                                                                   'lat': 40.7124819,
+                                                                   'latStored': 40.71253969999999,
+                                                                   }},
+                                       'manuver': 'turn-right',
+                                       'startLat': 40.7128957,
+                                       'startLong': -74.0071754},
+                            'Step 5': {'describeEnviorment': ['n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a'],
+                                       'describeMovement': "b'Turn "
+                                                           "<b>left</b>'",
+                                       'direction': {'NUMBER': 125.62925985380787,
+                                                     'TEXT': 'East'},
+                                       'distance_meters': 55,
+                                       'duration_seconds': 40,
+                                       'endLat': 40.7122056,
+                                       'endLong': -74.0070502,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': False,
+                                                                   'direction': 75.739,
+                                                                   'distance': 50.52,
+                                                                   'lat': 40.7122056,
+                                                                   'latStored': 40.7122397,
+                                                                   'lng': -74.0070502,
+                                                                   'lngStored': -74.00687319999999},}},
+                                       'manuver': 'turn-left',
+                                       'startLat': 40.7124819,
+                                       'startLong': -74.0075588},
+                            'Step 6': {'describeEnviorment': ['n/a',
+                                                              'n/a',
+                                                              'n/a',
+                                                              'n/a'],
+                                       'describeMovement': "b'Turn "
+                                                           "<b>left</b>'",
+                                       'direction': {'NUMBER': 56.88234406485486,
+                                                     'TEXT': 'East'},
+                                       'distance_meters': 70,
+                                       'duration_seconds': 51,
+                                       'endLat': 40.7124735,
+                                       'endLong': -74.0065084,
+                                       'lstofLatLongBetween': {1: {'SideWalkAccesible': False,
+                                                                   'direction': 61.847,
+                                                                   'distance': 51.203,
+                                                                   'lat': 40.7124735,
+                                                                   'latStored': 40.71253969999999,
+                                                                   'lng': -74.0065084,
+                                                                   'lngStored': -74.00634519999998},
+                                                   }},
+                                       'manuver': 'turn-left',
+                                       'startLat': 40.7122056,
+                                       'startLong': -74.0070502}},
+                'startLocation': {'address': '144 Fulton St, New York, NY '
+                                             '10038, USA',
+                                  'latitude': 40.7105199,
+                                  'longitude': -74.0084579,
+                                  'placeID': 'ChIJ8ftNOBhawokRrLVGhfHUzxQ'},
+                'summary': 'Broadway'}}
+```
+## JSON Storage Files
+
+```
+{
+	"_id" : ObjectId("6044248ec0d4cb8a5c6ee22f"),
+	"Location" : {
+		"LocationInformation" : {
+			"PanoID" : "iwDOMFY5n6DzBwgdDl_5aw",
+			"Latitude" : 33.7713178,
+			"Longitude" : -84.3993737,
+			"Address" : "",
+			"ContainsSideWalk" : {
+				"0" : false,
+				"90" : true,
+				"180" : true,
+				"270" : true
+			}
+		},
+		"Img1_0" : {
+			"Direction_Degrees" : 0,
+			"EncodedImg" : <encodedData>,
+			"Pitch" : 0,
+			"ZoomAndFov" : 75,
+			"CalculatedOutputAzure" : {
+				"ImageTagging" : {
+					"Tags" : {
+						"outdoor" : {
+							"Confidence" : 99.74283576011658,
+							"Hint" : "None"
+						},
+						"tree" : {
+							"Confidence" : 99.09307956695557,
+							"Hint" : "None"
+						},
+						"sky" : {
+							"Confidence" : 98.8550066947937,
+							"Hint" : "None"
+						},
+						"traveling" : {
+							"Confidence" : 33.799952268600464,
+							"Hint" : "None"
+						},
+						"railroad" : {
+							"Confidence" : 28.316831588745117,
+							"Hint" : "None"
+						},
+						"day" : {
+							"Confidence" : 22.358453273773193,
+							"Hint" : "None"
+						},
+						"" : {
+							"Confidence" : "",
+							"Hint" : ""
+						}
+					},
+					"RequestID" : "ff3da4c8-1730-4bbe-ad0f-15deab3caf9e"
+				},
+				"DescribeImg" : {
+					"Description" : {
+						"Text" : "a train on the railway tracks",
+						"Confidence" : 51.0195791721344
+					},
+					"Tags" : [
+						"outdoor",
+						"tree",
+						"sky",
+						"traveling",
+						"railroad",
+						"day"
+					],
+					"RequestID" : "a40c78c0-08dc-45d2-8260-654e54c3a1ff"
+				},
+				"MetaData" : {
+					"Width" : "640",
+					"Height" : "640",
+					"Format" : "Jpeg"
+				}
+			}
+		},
+		"Img2_90" : {
+			"Direction_Degrees" : 90,
+			"EncodedImg" : <encodedData>,
+			"Pitch" : 0,
+			"ZoomAndFov" : 75,
+			"CalculatedOutputAzure" : {
+				"ImageTagging" : {
+					"Tags" : {
+						"outdoor" : {
+							"Confidence" : 99.75268840789795,
+							"Hint" : "None"
+						},
+						"sky" : {
+							"Confidence" : 99.72885251045227,
+							"Hint" : "None"
+						},
+						"building" : {
+							"Confidence" : 94.66001987457275,
+							"Hint" : "None"
+						},
+						"vehicle" : {
+							"Confidence" : 92.80592203140259,
+							"Hint" : "None"
+						},
+						"car" : {
+							"Confidence" : 91.2281334400177,
+							"Hint" : "None"
+						},
+						"skyscraper" : {
+							"Confidence" : 90.51466584205627,
+							"Hint" : "None"
+						},
+						"street" : {
+							"Confidence" : 85.13995409011841,
+							"Hint" : "None"
+						},
+						"land vehicle" : {
+							"Confidence" : 84.69715118408203,
+							"Hint" : "None"
+						},
+						"downtown" : {
+							"Confidence" : 82.99269676208496,
+							"Hint" : "None"
+						},
+						"city" : {
+							"Confidence" : 81.87494277954102,
+							"Hint" : "None"
+						}
+					},
+					"RequestID" : "cf8186a2-b377-482b-8555-71a9799cdf01"
+				},
+				"DescribeImg" : {
+					"Description" : {
+						"Text" : "a street with cars and buildings",
+						"Confidence" : 35.095757246017456
+					},
+					"Tags" : [
+						"outdoor",
+						"sky",
+						"city",
+						"way",
+						"sidewalk"
+					],
+					"RequestID" : "c9b97f7b-d0e8-485d-ba02-c7849a5c5f72"
+				},
+				"MetaData" : {
+					"Width" : "640",
+					"Height" : "640",
+					"Format" : "Jpeg"
+				}
+			}
+		}
+```
