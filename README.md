@@ -17,6 +17,13 @@ The following is code which calls multiple APIS from **Azure**  and **GCP**. Thi
 13. Generate list of directions including images describition of the enviorment and which side of road to walk on
 14. Return JSON to front end with all info about directions
 
+# Visulization 
+
+Check out the following Jsfiddle links to see all the points saved in the database for the 3 campuses. 
+**MIT** --> https://jsfiddle.net/1cg4mah3/
+**Georiga Tech** --> https://jsfiddle.net/1zbh8f6p/
+**Pace University** --> https://jsfiddle.net/m1eaj6xL/
+
 # Calculation of is road is accessible - the brains of the program
 In many college campuses most of the area, there is panormas avaliable in the google maps database. We access this through their web streets api and save the images locally. Using Azure describe and tagging computer vision AI models we get a list of tags and a desciptions of the image with their confidences. We use a tested threshold and specific tag names to determine if that lat long location is accessible. Some of the tags we use are `sidewalk` and `way`. 
 ## Finding closest lat long in Data
