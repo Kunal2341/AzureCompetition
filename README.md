@@ -11,6 +11,10 @@ Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/
 # Accessible Directions
 The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
 
+# Architecture
+
+
+
 # Steps
 1. Locate the center of a specific college and get its lat long coordinates. (*selenium*)
 2. Generate 4 corners around the point to generate a square/rectangle of different dimensions (*for Georgia Tech it is a width of ~1 mile but Pace University is ~0.75 mile*). In order to calculate the corners I added the lat longs by a specific number, here I estimated that earth is flat so the area will not be a perfect square but its okay to estimate that. 
