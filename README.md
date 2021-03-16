@@ -13,7 +13,7 @@ The following is code which calls multiple APIS from **Azure**  and **GCP**. Thi
 
 # Architecture
 
-
+![Architecture Diagram Image](https://github.com/Kunal2341/AzureCompetition/raw/main/architectureDiagram.png)
 
 # Steps
 1. Locate the center of a specific college and get its lat long coordinates. (*selenium*)
