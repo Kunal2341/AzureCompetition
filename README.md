@@ -7,7 +7,7 @@
 
 
 
-Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/
+~~Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/~~
 # Accessible Directions
 The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
 
