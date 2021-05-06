@@ -1,8 +1,6 @@
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://GitHub.com/Naereen/ama) [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)  [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Au29u0vyDsE2xXHTNaLLIufyEQp5ZNYH?usp=sharing) [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/) 
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Ask Me Anything !](https://img.shields.io/badge/Ask%20me-anything-1abc9c.svg)](https://GitHub.com/Naereen/ama) [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)  [![Open In Collab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Au29u0vyDsE2xXHTNaLLIufyEQp5ZNYH?usp=sharing) [![Open Source? Yes!](https://badgen.net/badge/Open%20Source%20%3F/Yes%21/blue?icon=github)](https://github.com/Naereen/badges/) 
 
-[![Made withJupyter](https://img.shields.io/badge/Made%20with-Jupyter-orange?style=for-the-badge&logo=Jupyter)](https://jupyter.org/try)
-
-
+![Made withJupyter](https://img.shields.io/badge/Made%20with-Jupyter-orange?style=for-the-badge&logo=Jupyter)](https://jupyter.org/try)
 
 
 
@@ -10,6 +8,12 @@
 ~~Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/~~
 # Accessible Directions
 The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
+
+# Video Demo
+
+[YOUTUBE VIDEO](https://www.youtube.com/watch?v=dDENCcw8i5M)
+
+[![Website Image](https://github.com/Kunal2341/AzureCompetition/raw/main/WebsiteDesign.png)](https://www.youtube.com/watch?v=dDENCcw8i5M)
 
 # Architecture
 
