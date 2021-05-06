@@ -6,9 +6,6 @@
 
 
 ~~Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/~~
-# Accessible Directions
-The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
-
 # Video Demo
 
 [YOUTUBE VIDEO](https://www.youtube.com/watch?v=dDENCcw8i5M)
@@ -18,6 +15,8 @@ The following is code which calls multiple APIS from **Azure**  and **GCP**. Thi
 # Architecture
 
 ![Architecture Diagram Image](https://github.com/Kunal2341/AzureCompetition/raw/main/architectureDiagram.png)
+# Accessible Directions
+The following is code which calls multiple APIS from **Azure**  and **GCP**. This is part 2 of the code which will be installed in the Azure Function. I have broken down the steps. Steps **1-6** are saving data to mongoDB while steps **7-14** the calculations of creating the directions. 
 
 # Steps
 1. Locate the center of a specific college and get its lat long coordinates. (*selenium*)
