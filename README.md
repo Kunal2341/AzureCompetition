@@ -37,8 +37,11 @@ The following is code which calls multiple APIS from **Azure**  and **GCP**. Thi
 # Visulization 
 
 Check out the following Jsfiddle links to see all the points saved in the database for the 3 campuses. 
+
 **MIT** --> https://jsfiddle.net/1cg4mah3/
+
 **Georiga Tech** --> https://jsfiddle.net/1zbh8f6p/
+
 **Pace University** --> https://jsfiddle.net/m1eaj6xL/
 
 # Calculation of is road is accessible - the brains of the program
