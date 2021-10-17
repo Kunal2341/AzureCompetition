@@ -2,15 +2,15 @@
 
 ![Made withJupyter](https://img.shields.io/badge/Made%20with-Jupyter-orange?style=for-the-badge&logo=Jupyter)](https://jupyter.org/try)
 
-
-
-
 ~~Running Live: https://ambitious-smoke-09e79b70f.azurestaticapps.net/~~
 # Video Demo
 
 [YOUTUBE VIDEO](https://www.youtube.com/watch?v=dDENCcw8i5M)
 
 [![Website Image](https://github.com/Kunal2341/AzureCompetition/raw/main/WebsiteDesign.png)](https://www.youtube.com/watch?v=dDENCcw8i5M)
+
+# Research Paper
+[Click here to view](https://github.com/Kunal2341/AzureCompetition/blob/main/Azure%20Hackathon.docx)
 
 # Architecture
 
